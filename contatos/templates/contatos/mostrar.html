@@ -1,0 +1,30 @@
+{% extends "contatos/base.html" %}
+
+{% block content %}
+
+<table class="table table-hover">
+      <tr>
+        <th>ID</th>
+        <th>Nome</th>
+          <th>Idade</th>
+          <th>Site</th>
+          <th>Data de Cadastro</th>
+          <th>Apagar</th>
+          <th>Editar</th>
+
+      </tr>
+
+      {% for i in pessoas %}
+      <tr>
+        <td>{{ i.id }}</td>
+        <td>{{ i.nome }}</td>
+          <td>{{i.idade}}</td>
+          <td>{{i.site}}</td>
+            <td>{{ i.datacadastro }}</td>
+          <td><a href="{%url 'apagar' i.id %}">Apagar</a></td>
+          <td><a href="{%url 'editar' i.id %}">Editar</a></td>
+    </tr>
+      {% endfor %}
+    </table>
+
+{% endblock %}
