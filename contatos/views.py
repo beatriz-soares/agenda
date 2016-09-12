@@ -5,6 +5,7 @@ from django.shortcuts import render
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from contatos.models import *
+from django.utils.timezone import datetime
 
 
 # Create your views here.
@@ -25,7 +26,7 @@ def adicionar(request):
         p.nome = nome
         p.idade = idade
         p.site = url
-        p.datacadastro = '1111-11-11'
+        p.datacadastro = datetime.today()
 
         p.save()
 
@@ -59,7 +60,7 @@ def editar (request, id):
         query.nome = nome
         query.idade = idade
         query.site = url
-        query.datacadastro = '1111-11-11'
+        query.datacadastro = datetime.today()
 
         query.save()
 
