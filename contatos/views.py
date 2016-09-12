@@ -1,15 +1,11 @@
 from django.shortcuts import render
-
-# Create your views here.
-
-from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from contatos.models import *
-
+from django.utils.timezone import datetime
 
 # Create your views here.
 
-def hello(request):
+def principal(request):
     query = Pessoa.objects.all()
     return render(request, "contatos/listar.html", {'pessoas': query})
 
@@ -25,7 +21,7 @@ def adicionar(request):
         p.nome = nome
         p.idade = idade
         p.site = url
-        p.datacadastro = '1111-11-11'
+        p.datacadastro = datetime.today()
 
         p.save()
 
@@ -33,22 +29,18 @@ def adicionar(request):
     else:
         return render(request, "contatos/novo.html")
 
+
 def mostrar(request, id):
+    query = Pessoa.objects.filter(id=id)
+    return render(request, "contatos/mostrar.html", {'pessoas': query})
 
-    if request.method == 'GET':
-        query = Pessoa.objects.filter(id=id)
-
-
-        return render(request, "contatos/mostrar.html", {'pessoas': query})
 
 def apagar(request, id):
+    Pessoa.objects.filter(id=id).delete()
+    return HttpResponseRedirect('/')
 
-    if request.method == 'GET':
-        Pessoa.objects.filter(id=id).delete()
 
-        return HttpResponseRedirect('/')
-
-def editar (request, id):
+def editar(request, id):
     if request.method == 'POST':
         params = request.POST
         query = Pessoa.objects.get(pk=id)
@@ -59,7 +51,7 @@ def editar (request, id):
         query.nome = nome
         query.idade = idade
         query.site = url
-        query.datacadastro = '1111-11-11'
+        query.datacadastro = datetime.today()
 
         query.save()
 

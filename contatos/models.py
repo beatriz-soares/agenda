@@ -9,3 +9,6 @@ class Pessoa(models.Model):
     idade = models.PositiveIntegerField()
     site = models.URLField()
     datacadastro = models.DateField()
+
+    def __str__(self):
+        return "%s - %s" % (self.nome, self.site)
