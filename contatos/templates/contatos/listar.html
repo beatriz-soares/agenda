@@ -5,25 +5,24 @@
 <h2><a href="/contatos/adicionar">Adicionar</a></h2>
 
 
-    <table class="table table-hover">
-      <tr>
+<table class="table table-hover">
+    <tr>
         <th>ID</th>
         <th>Nome</th>
-          <th>Idade</th>
-          <th>Site</th>
-          <th>Detalhes</th>
+        <th>Idade</th>
+        <th>Site</th>
+        <th>Detalhes</th>
+    </tr>
 
-      </tr>
-
-      {% for i in pessoas %}
-      <tr>
+    {% for i in pessoas %}
+    <tr>
         <td>{{ i.id }}</td>
         <td>{{ i.nome }}</td>
-          <td>{{i.idade}}</td>
-          <td>{{i.site}}</td>
-          <td><a href="{%url 'par' i.id %}">Ver Detalhes</a></td>
-      </tr>
-      {% endfor %}
-    </table>
+        <td>{{i.idade}}</td>
+        <td>{{i.site}}</td>
+        <td><a href="{%url 'par' i.id %}">Ver Detalhes</a></td>
+    </tr>
+    {% endfor %}
+</table>
 
 {% endblock %}
