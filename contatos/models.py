@@ -12,3 +12,8 @@ class Pessoa(models.Model):
 
     def __str__(self):
         return "%s - %s" % (self.nome, self.site)
+
+
+class Numero(models.Model):
+    pessoa = models.ForeignKey(Pessoa, related_name="numeros")
+    numero = models.IntegerField()

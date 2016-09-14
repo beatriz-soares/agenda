@@ -12,4 +12,6 @@ urlpatterns = [
   url(r'^mostrar/(?P<id>\d+)', mostrar, name="par"),
   url(r'^apagar/(?P<id>\d+)', apagar, name="apagar"),
   url(r'^editar/(?P<id>\d+)', editar, name="editar"),
+  url(r'^novonum/(?P<id>\d+)', novonum, name="novonum"),
+  url(r'^addcsv/', addcsv, name="addcsv"),
 ]

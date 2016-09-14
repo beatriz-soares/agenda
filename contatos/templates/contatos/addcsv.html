@@ -1,9 +1,9 @@
 {% extends "contatos/base.html" %}
-{%block title%}Editar{% endblock %}
-{% block titulo %}Editar{% endblock %}
+{%block title%}Adicionar CSV{% endblock %}
+{% block titulo %}Adicionar CSV{% endblock %}
 {% block content %}
 
-<form action="" method="post">
+<form action="" method="post" enctype="multipart/form-data">
     {% csrf_token %}
 
     {{ form }}

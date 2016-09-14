@@ -2,61 +2,141 @@ from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from contatos.models import *
 from django.utils.timezone import datetime
+from .forms import *
+from django.contrib import messages
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.db.models import F
 
 # Create your views here.
 
 def principal(request):
-    query = Pessoa.objects.all()
-    return render(request, "contatos/listar.html", {'pessoas': query})
+    contact_list = Pessoa.objects.all()
+
+    paginator = Paginator(contact_list, 10) # Show 25 contacts per page
+
+    page = request.GET.get('page')
+    try:
+        contacts = paginator.page(page)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        contacts = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        contacts = paginator.page(paginator.num_pages)
+
+    return render(request, "contatos/listar.html", {'contacts': contacts})
 
 
 def adicionar(request):
+    form = PessoaForm(request.POST or None)
+    form_cel = CelForm(request.POST or None)
+
     if request.method == 'POST':
-        params = request.POST
-        nome = params.get("nome", None)
-        idade = params.get("idade", None)
-        url = params.get("url", None)
+        if form.is_valid() and form_cel.is_valid():
+            nome = form.cleaned_data['nome']
+            idade = form.cleaned_data['idade']
+            url = form.cleaned_data['site']
+            cel = form_cel.cleaned_data['numero']
 
-        p = Pessoa()
-        p.nome = nome
-        p.idade = idade
-        p.site = url
-        p.datacadastro = datetime.today()
+            p = Pessoa()
+            p.nome = nome
+            p.idade = idade
+            p.site = url
+            p.datacadastro = datetime.today()
+            p.save()
 
-        p.save()
+            if cel:
+                d = Numero()
+                d.pessoa = p
+                d.numero = cel
+                d.save()
 
-        return HttpResponseRedirect('/')
-    else:
-        return render(request, "contatos/novo.html")
+            messages.add_message(request, messages.INFO, 'Contato Adicionado')
+            return HttpResponseRedirect('/')
+
+    return render(request, "contatos/novo.html", {'form': form,'form_cel':form_cel})
+
+
+def novonum(request, id):
+    form_cel = CelForm(request.POST or None)
+
+    if request.method == 'POST':
+        if form_cel.is_valid():
+            messages.add_message(request, messages.INFO, 'Numero Adicionado')
+            cel = form_cel.cleaned_data['numero']
+            query = Pessoa.objects.get(pk=id)
+            numero = Numero()
+            numero.pessoa = query
+            numero.numero = cel
+
+            numero.save()
+
+            return render(request, "contatos/mostrar.html", {'pessoa': query})
+
+    return render(request, "contatos/novonum.html", {'form_cel': form_cel})
 
 
 def mostrar(request, id):
-    query = Pessoa.objects.filter(id=id)
-    return render(request, "contatos/mostrar.html", {'pessoas': query})
+    query = Pessoa.objects.get(pk=id)
+    return render(request, "contatos/mostrar.html", {'pessoa': query})
 
 
 def apagar(request, id):
+    query = Pessoa.objects.get(pk=id)
+    nome = query.nome
     Pessoa.objects.filter(id=id).delete()
+
+    messages.add_message(request, messages.INFO, 'Contato apagado %s' % nome)
     return HttpResponseRedirect('/')
 
 
 def editar(request, id):
+    query = Pessoa.objects.get(pk=id)
+    form = PessoaForm(request.POST or None, initial={'nome': query.nome, "idade": query.idade, "site": query.site})
+
     if request.method == 'POST':
-        params = request.POST
-        query = Pessoa.objects.get(pk=id)
-        nome = params.get("nome", None)
-        idade = params.get("idade", None)
-        url = params.get("url", None)
+        if form.is_valid():
+            nome = form.cleaned_data['nome']
+            idade = form.cleaned_data['idade']
+            url = form.cleaned_data['site']
 
-        query.nome = nome
-        query.idade = idade
-        query.site = url
-        query.datacadastro = datetime.today()
+            query.nome = nome
+            query.idade = idade
+            query.site = url
+            query.datacadastro = datetime.today()
+            query.save()
 
-        query.save()
+            messages.add_message(request, messages.INFO, 'Edicao bem sucedida')
+            return render(request, "contatos/mostrar.html", {'pessoa': query})
 
-        return HttpResponseRedirect('/')
-    return render(request, 'contatos/editar.html', {})
+    return render(request, 'contatos/editar.html', {'form': form})
+
+def addcsv (request):
+    form = AddCSV(request.POST or None, request.FILES or None)
+
+    if request.method == 'POST':
+        if form.is_valid():
+            arquivo = request.FILES['csv']
+            pessoas = []
+
+            for line in arquivo:
+                line = line.split(',')
+                p = Pessoa()
+                p.nome = line[0]
+                p.idade = line[1]
+                p.site = line[2]
+                p.datacadastro = datetime.today()
+                pessoas.append(p)
+
+            Pessoa.objects.bulk_create(pessoas)
+
+            messages.add_message(request, messages.INFO, 'Foram adicionados %s contatos' % len(pessoas))
+            return HttpResponseRedirect('/')
+
+    return render(request, "contatos/addcsv.html", {'form': form})
+
+
+
 
 
 

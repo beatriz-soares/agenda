@@ -1,12 +1,13 @@
 {% extends "contatos/base.html" %}
-{%block title%}Editar{% endblock %}
-{% block titulo %}Editar{% endblock %}
+{%block title%}Novo Numero{% endblock %}
+{% block titulo %}Novo Numero{% endblock %}
 {% block content %}
 
 <form action="" method="post">
     {% csrf_token %}
 
-    {{ form }}
+
+    {{ form_cel }}
 
     <br>
     <button class="btn btn-success" type="submit">Enviar</button>

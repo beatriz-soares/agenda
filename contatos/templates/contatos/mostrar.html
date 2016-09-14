@@ -1,29 +1,59 @@
 {% extends "contatos/base.html" %}
+{%block title%}Detalhes{% endblock %}
+{% block titulo %}Detalhes{% endblock %}
 
 {% block content %}
+{% if messages %}
+<ul class="messages">
+    {% for message in messages %}
+    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}{{ nome }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+<a href="{% url 'apagar' pessoa.id %}" class="btn btn-danger">Apagar</a>
+<a href="{% url 'editar' pessoa.id %}" class="btn btn-info">Editar</a>
+<a href="{% url 'novonum' pessoa.id %}" class="btn btn-info">Adicionar Numero</a>
+<a href="{% url 'principal' %}" class="btn btn-warning">Voltar</a>
 
 <table class="table table-hover">
     <tr>
         <th>ID</th>
-        <th>Nome</th>
-        <th>Idade</th>
-        <th>Site</th>
-        <th>Data de Cadastro</th>
-        <th>Apagar</th>
-        <th>Editar</th>
+        <th>{{ pessoa.id }}</th>
     </tr>
 
-    {% for i in pessoas %}
     <tr>
-        <td>{{ i.id }}</td>
-        <td>{{ i.nome }}</td>
-        <td>{{i.idade}}</td>
-        <td>{{i.site}}</td>
-        <td>{{ i.datacadastro }}</td>
-        <td><a href="{%url 'apagar' i.id %}">Apagar</a></td>
-        <td><a href="{%url 'editar' i.id %}">Editar</a></td>
+        <td>Nome</td>
+        <td>{{ pessoa.nome }}</td>
     </tr>
-    {% endfor %}
+
+    <tr>
+        <td>Idade</td>
+        <td>{{ pessoa.idade }}</td>
+    </tr>
+
+    <tr>
+        <td>Site</td>
+        <td>{{ pessoa.site }}</td>
+    </tr>
+
+    <tr>
+        <td>Data de Cadastro</td>
+        <td>{{ pessoa.datacadastro|date:"d-m-Y" }}</td>
+    </tr>
+    <tr>
+        <td>Numero</td>
+        <td>
+            {# kjyytfguyryu #}
+            {% for numero in pessoa.numeros.all %}
+                <p>{{ numero.numero }}</p>
+            {% empty %}
+                <p>-</p>
+            {% endfor %}
+        </td>
+
+    </tr>
 </table>
+
+
 
 {% endblock %}

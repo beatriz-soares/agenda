@@ -1,8 +1,16 @@
 {% extends "contatos/base.html" %}
-
+{%block title%}Contatos{% endblock %}
+{% block titulo %}Contatos{% endblock %}
 {% block content %}
-<h1>Contatos</h1>
-<h2><a href="/contatos/adicionar">Adicionar</a></h2>
+{% if messages %}
+<ul class="messages">
+    {% for message in messages %}
+    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}{{nome}}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+<a href="/contatos/adicionar" class="btn btn-success">Adicionar</a>
+<a href="/contatos/addcsv" class="btn btn-success">Adicionar CSV</a>
 
 
 <table class="table table-hover">
@@ -12,17 +20,39 @@
         <th>Idade</th>
         <th>Site</th>
         <th>Detalhes</th>
+
     </tr>
 
-    {% for i in pessoas %}
+    {% for i in contacts %}
     <tr>
         <td>{{ i.id }}</td>
         <td>{{ i.nome }}</td>
         <td>{{i.idade}}</td>
         <td>{{i.site}}</td>
         <td><a href="{%url 'par' i.id %}">Ver Detalhes</a></td>
+
+
     </tr>
     {% endfor %}
 </table>
+<div class="pagination">
+    <span class="step-links">
+
+        {% if contacts.has_previous %}
+        <a href="?page={{ contacts.first_page }}">Voltar para a primeira</a>
+        <br/>
+            <a href="?page={{ contacts.previous_page_number }}">Anterior</a>
+
+        {% endif %}
+
+        <span class="current">
+            Pagina {{ contacts.number }} de {{ contacts.paginator.num_pages }}
+        </span>
+
+        {% if contacts.has_next %}
+            <a href="?page={{ contacts.next_page_number }}">Proxima</a>
+        {% endif %}
+    </span>
+</div>
 
 {% endblock %}

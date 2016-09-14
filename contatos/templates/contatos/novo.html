@@ -1,16 +1,17 @@
 {% extends "contatos/base.html" %}
-
+{%block title%}Novo{% endblock %}
+{% block titulo %}Novo{% endblock %}
 {% block content %}
 
 <form action="{% url 'adicionar' %}" method="post">
     {% csrf_token %}
-    <div class="form-group">
-        <label>Nome</label><input type="text" class="form-control" name="nome"/>
-        <label>Idade</label><input type="number" class="form-control" name="idade"/>
-        <label>Site</label><input type="url" class="form-control" name="url"/>
-    </div>
 
-    <button class="btn btn-success" type="submit">enviar</button>
+    {{ form }}
+
+    {{ form_cel }}
+
+    <br>
+    <button class="btn btn-success" type="submit">Enviar</button>
 </form><br>
 
 {% endblock %}
