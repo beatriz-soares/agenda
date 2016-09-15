@@ -37,18 +37,22 @@ def adicionar(request):
             idade = form.cleaned_data['idade']
             url = form.cleaned_data['site']
             cel = form_cel.cleaned_data['numero']
+            sexo = form.cleaned_data['sexo']
+            tiponum = form_cel.cleaned_data['tiponum']
 
             p = Pessoa()
             p.nome = nome
             p.idade = idade
             p.site = url
             p.datacadastro = datetime.today()
+            p.sexo = sexo
             p.save()
 
             if cel:
                 d = Numero()
                 d.pessoa = p
                 d.numero = cel
+                d.tiponum = tiponum
                 d.save()
 
             messages.add_message(request, messages.INFO, 'Contato Adicionado')
@@ -64,10 +68,12 @@ def novonum(request, id):
         if form_cel.is_valid():
             messages.add_message(request, messages.INFO, 'Numero Adicionado')
             cel = form_cel.cleaned_data['numero']
+            tiponum = form_cel.cleaned_data['tiponum']
             query = Pessoa.objects.get(pk=id)
             numero = Numero()
             numero.pessoa = query
             numero.numero = cel
+            numero.tiponum = tiponum
 
             numero.save()
 
@@ -85,8 +91,9 @@ def apagar(request, id):
     query = Pessoa.objects.get(pk=id)
     nome = query.nome
     Pessoa.objects.filter(id=id).delete()
+    Numero.objects.filter(pessoa = id).delete()
 
-    messages.add_message(request, messages.INFO, 'Contato apagado %s' % nome)
+    messages.add_message(request, messages.INFO, 'Contato apagado: %s' % nome)
     return HttpResponseRedirect('/')
 
 
@@ -99,11 +106,13 @@ def editar(request, id):
             nome = form.cleaned_data['nome']
             idade = form.cleaned_data['idade']
             url = form.cleaned_data['site']
+            sexo = form.cleaned_data['sexo']
 
             query.nome = nome
             query.idade = idade
             query.site = url
             query.datacadastro = datetime.today()
+            query.sexo = sexo
             query.save()
 
             messages.add_message(request, messages.INFO, 'Edicao bem sucedida')

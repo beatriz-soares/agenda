@@ -1,5 +1,6 @@
 {% extends "contatos/base.html" %}
-{%block title%}Detalhes{% endblock %}
+{% load extras %}
+{% block title %}Detalhes{% endblock %}
 {% block titulo %}Detalhes{% endblock %}
 
 {% block content %}
@@ -35,6 +36,10 @@
         <td>Site</td>
         <td>{{ pessoa.site }}</td>
     </tr>
+    <tr>
+        <td>Sexo</td>
+        <td>{{ pessoa.sexo }}</td>
+    </tr>
 
     <tr>
         <td>Data de Cadastro</td>
@@ -43,15 +48,15 @@
     <tr>
         <td>Numero</td>
         <td>
-            {# kjyytfguyryu #}
             {% for numero in pessoa.numeros.all %}
-                <p>{{ numero.numero }}</p>
+                <p>{{ numero.numero | formatar }} - {{numero.tiponum}}</p>
             {% empty %}
                 <p>-</p>
             {% endfor %}
         </td>
 
     </tr>
+
 </table>
 
 
