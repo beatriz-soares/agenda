@@ -6,8 +6,18 @@ from .forms import *
 from django.contrib import messages
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import F
+from django.contrib.auth.models import User, Group
+from rest_framework import viewsets
+from contatos.serializers import *
 
 # Create your views here.
+class PessoaViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows users to be viewed or edited.
+    """
+    queryset = Pessoa.objects.all().order_by('datacadastro')
+    serializer_class = UserSerializer
+
 
 def principal(request):
     contact_list = Pessoa.objects.all()

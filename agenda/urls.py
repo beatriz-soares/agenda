@@ -1,6 +1,11 @@
 from django.conf.urls import include, url
 from django.contrib import admin
 from contatos.views import *
+from rest_framework import routers
+from contatos import views
+
+router = routers.DefaultRouter()
+router.register(r'/pessoas', views.PessoaViewSet)
 
 urlpatterns = [
     # Examples:
@@ -10,4 +15,5 @@ urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
     url(r'^$', principal),
     url(r'^contatos/', include('contatos.urls')),
+    url(r'^api', include(router.urls)),
 ]

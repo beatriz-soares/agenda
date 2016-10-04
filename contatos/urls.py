@@ -1,6 +1,6 @@
 from django.conf.urls import include, url
-
 from contatos.views import *
+from contatos import views
 
 urlpatterns = [
   # Examples:
@@ -14,4 +14,5 @@ urlpatterns = [
   url(r'^editar/(?P<id>\d+)', editar, name="editar"),
   url(r'^novonum/(?P<id>\d+)', novonum, name="novonum"),
   url(r'^addcsv/', addcsv, name="addcsv"),
+
 ]
